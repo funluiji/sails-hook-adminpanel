@@ -32,6 +32,35 @@
   "sails": {
     "isHook": true
   },
-  "author": "Konstantin Zolotarev",
-  "license": "MIT"
+  "author": {
+    "name": "Konstantin Zolotarev"
+  },
+  "license": "MIT",
+  "gitHead": "6a08d91439f20b31c4b25d1f7f34a010cf2ce5bd",
+  "bugs": {
+    "url": "https://github.com/konstantinzolotarev/sails-hook-adminpanel/issues"
+  },
+  "homepage": "https://github.com/konstantinzolotarev/sails-hook-adminpanel",
+  "_id": "sails-hook-adminpanel@0.1.16",
+  "_shasum": "999166c6c7014e9e4ee2513aaaf5140eb01e0da6",
+  "_from": "sails-hook-adminpanel@*",
+  "_npmVersion": "2.5.1",
+  "_nodeVersion": "0.12.0",
+  "_npmUser": {
+    "name": "kos",
+    "email": "konstantin.zolotarev@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "kos",
+      "email": "konstantin.zolotarev@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "999166c6c7014e9e4ee2513aaaf5140eb01e0da6",
+    "tarball": "http://registry.npmjs.org/sails-hook-adminpanel/-/sails-hook-adminpanel-0.1.16.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/sails-hook-adminpanel/-/sails-hook-adminpanel-0.1.16.tgz",
+  "readme": "ERROR: No README data found!"
 }

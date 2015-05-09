@@ -11,6 +11,8 @@ mixin fieldWidget(key, field, value)
       else
         - var type = field.config.type || field.model.type
         case type
+          when 'association_many'
+            +inputChosen(key, field, value)
           when 'association'
             +inputModel(key, field, value)
           when 'string'
@@ -84,8 +86,29 @@ mixin inputModel(key, field, value)
     else
       option(value='') --- No records found ---
 
+mixin inputChosen(key, field, value)
+  select.chosen-select(name=key, id='form-#{key}', data-placeholder="--- Select please ---", multiple, required=field.config.required || false, disabled=field.config.disabled || false).form-control
+    if field.config.records
+      each opt in field.config.records
+        if(value && value.length>0)
+          -var selected = false
+          each val in value
+            if opt[field.config.identifierField] == val[field.config.identifierField]
+              -selected = true
+          option(value=opt[field.config.identifierField],  selected=selected) #{opt[field.config.displayField]}
+        else
+          option(value=opt[field.config.identifierField]) #{opt[field.config.displayField]}
+    else
+      option(value='') --- No records found ---
+
 mixin installEditors(fields)
   script(type='text/javascript')
-    each field, key in fields
-      if field.config.editor
+  each field, key in fields
+    if field.config.editor
         | CKEDITOR.replace( 'form-#{key}' );
+
+mixin setupChosen()
+  script(type='text/javascript').
+    $(document).ready(function () {
+      $(".chosen-select").chosen({width: "95%"});
+    })

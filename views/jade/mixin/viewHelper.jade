@@ -14,5 +14,20 @@ mixin showValue(key, field, value)
       else
         | #{value[field.config.displayField]}
 
+    when 'association_many'
+      if (!value || typeof value === 'undefined')
+        td &nbsp;
+      else if (typeof value === 'string')
+        td #{value}
+      else if (typeof value === 'object')
+        td
+        each reccord, i in value
+          if i === 0
+              | #{reccord[[field.config.displayField]]}
+          else
+            |, #{reccord[[field.config.displayField]]}
+      else
+        td #{value && value[field.config.displayField] ? value[field.config.displayField] : '&nbsp;'}
+
     default
       | #{value}

@@ -24,6 +24,9 @@ module.exports = function(req, res) {
     fieldsHelper.getFieldsToPopulate(fields).forEach(function(val) {
         query.populate(val);
     });
+    fieldsHelper.getOneToManyFieldsToPopulate(fields).forEach(function(val) {
+        query.populate(val);
+    });
     query.exec(function(err, record) {
             if (err) {
                 req._sails.log.error('Admin edit error: ');

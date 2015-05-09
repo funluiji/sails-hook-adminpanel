@@ -49,6 +49,9 @@ module.exports = function(req, res) {
             fieldsHelper.getFieldsToPopulate(fields).forEach(function(val) {
                 query.populate(val);
             });
+            fieldsHelper.getOneToManyFieldsToPopulate(fields).forEach(function(val) {
+                query.populate(val);
+            });
             query.paginate({page: page, limit: instance.config.list.limit || 15})
                 .exec(function(err, list) {
                     if (err) return done(err);

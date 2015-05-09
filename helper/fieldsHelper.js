@@ -168,14 +168,20 @@ module.exports = {
          * @param {function=} [cb]
          */
         var loadAssoc = function(key, cb) {
-            if (fields[key].config.type !== 'association') {
+            if (fields[key].config.type !== 'association' && fields[key].config.type !== 'association_many') {
                 return cb();
             }
+            var Model = null;
             fields[key].config.records = [];
-            var Model = util.getModel(fields[key].model.model);
+            if(fields[key].config.type === 'association') {
+                Model = util.getModel(fields[key].model.model);
+            }else{
+                Model = util.getModel(fields[key].model.collection);
+            }
             if (!Model) {
                 return cb();
             }
+            //TODO: set a filter
             Model.find().exec(function(err, list) {
                 if (err) {
                     return cb();
@@ -192,7 +198,6 @@ module.exports = {
             return cb(null, fields);
         });
     },
-
     /**
      * Create list of populated models
      *
@@ -203,6 +208,21 @@ module.exports = {
         var result = [];
         _.forEach(fields, function(field, key) {
             if (field.config.type === 'association') {
+                result.push(key);
+            }
+        });
+        return result;
+    },
+    /**
+     * Create list of populated models
+     *
+     * @param {Object} fields
+     * @returns {Array}
+     */
+    getOneToManyFieldsToPopulate: function(fields) {
+        var result = [];
+        _.forEach(fields, function(field, key) {
+            if (field.config.type === 'association_many') {
                 result.push(key);
             }
         });
@@ -249,7 +269,7 @@ module.exports = {
         var actionConfigFields = _.keys(actionConfig.fields);
         //Getting list of fields from model
         var modelAttributes = _.pick(instance.model.attributes, function(val, key) {
-            return ((_.isPlainObject(val) || _.isString(val)) && !val.collection);
+            return ((_.isPlainObject(val) || _.isString(val)));
         });
 
         var that = this;
@@ -273,6 +293,9 @@ module.exports = {
             }
             if (_.isObject(modelField) && modelField.model) {
                 modelField.type = 'association';
+            }
+            if (_.isObject(modelField) && modelField.collection) {
+                modelField.type = 'association_many';
             }
             if (type === 'add' && key === req._sails.config.adminpanel.identifierField) {
                 return;

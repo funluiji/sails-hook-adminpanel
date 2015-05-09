@@ -20,9 +20,12 @@ module.exports = function(req, res) {
     if (!instance.config.edit) {
         return res.redirect(instance.uri);
     }
-
-    instance.model.findOne(req.param('id'))
-        .exec(function(err, record) {
+    var query = instance.model.findOne(req.param('id'))
+    var fields = fieldsHelper.getFields(req, instance, 'edit');
+    fieldsHelper.getOneToManyFieldsToPopulate(fields).forEach(function(val) {
+        query.populate(val);
+    });
+    query.exec(function(err, record) {
             if (err) {
                 req._sails.log.error('Admin edit error: ');
                 req._sails.log.error(err);
@@ -37,7 +40,6 @@ module.exports = function(req, res) {
                         done();
                     });
                 },
-
                 function checkPost(done) {
                     if (req.method.toUpperCase() !== 'POST') {
                         return done();
@@ -51,6 +53,29 @@ module.exports = function(req, res) {
                             return done(err);
                         }
                         req.flash('adminSuccess', 'Your record was updated !');
+                        return done();
+                    });
+                },
+                function populateUpdatedReccord(done) {
+                    if (req.method.toUpperCase() !== 'POST') {
+                        return done();
+                    }
+                    var query = instance.model.findOne(req.param('id'))
+                    var fields = fieldsHelper.getFields(req, instance, 'edit');
+                    var oneToManyfileds = fieldsHelper.getOneToManyFieldsToPopulate(fields)
+                    if(oneToManyfileds.length==0){
+                        return done();
+                    }
+
+                    oneToManyfileds.forEach(function(val) {
+                        query.populate(val);
+                    });
+                    query.exec(function(err, populatedRecord) {
+                        if (err) {
+                            req._sails.log.error(err);
+                            return done(err);
+                        }
+                        record = populatedRecord;
                         return done();
                     });
                 }
