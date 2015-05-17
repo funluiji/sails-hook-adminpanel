@@ -19,6 +19,7 @@
     "animate.css": "~3.2.6",
     "ckeditor": "~4.4.7",
     "polymer": "Polymer/polymer#^0.5",
+    "ng-jsoneditor": "angular-tools/ng-jsoneditor",
     "chosen" : "~1.4.2"
   }
 }
