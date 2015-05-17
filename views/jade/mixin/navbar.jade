@@ -1,3 +1,9 @@
+mixin menuItem(menuItem)
+  li: a(href=menuItem.link)
+    if menuItem.icon
+      i(class='glyphicon-#{menuItem.icon}').glyphicon
+    | &nbsp;#{menuItem.title}
+
 mixin navbar
   div(role='navigation').navbar.navbar-default.navbar-fixed-top
     .container
@@ -7,11 +13,22 @@ mixin navbar
           span.icon-bar
           span.icon-bar
           span.icon-bar
-        a(href='/admin').navbar-brand #{locals.adminpanel.config.title || 'Dashboard'}
+        if locals.adminpanel.menuHelper.hasBrand()
+          a(href=locals.adminpanel.menuHelper.getBrandLink()).navbar-brand #{locals.adminpanel.menuHelper.getBrandTitle()}
       .navbar-collapse
         ul.nav.navbar-nav
-          each instance, key in locals.adminpanel.config.instances
-            li: a(href='#{locals.adminpanel.config.routePrefix}/#{key}') #{instance.title}
+          each group in locals.adminpanel.menuHelper.getGroups()
+            li.dropdown
+              a(href="#", data-toggle="dropdown", role="button", aria-expanded="false").dropdown-toggle
+                if group.icon
+                  i(class='glyphicon-#{group.icon}').glyphicon
+                | &nbsp;#{group.title || 'Dropdown'}
+                span.caret
+              ul(role='menu').dropdown-menu
+                each menuItem in group.menues
+                  +menuItem(menuItem)
+          each menuItem in locals.adminpanel.menuHelper.getInstanceMenues()
+            +menuItem(menuItem)
 
 
 
