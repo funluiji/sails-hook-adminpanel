@@ -96,17 +96,30 @@ mixin inputChosen(key, field, value)
           each val in value
             if opt[field.config.identifierField] == val[field.config.identifierField]
               -selected = true
-          option(value=opt[field.config.identifierField],  selected=selected) #{opt[field.config.displayField]}
+          option(value=opt[field.config.identifierField],  selected=selected)
+            if field.config.advancedDisplayField
+              +queryValue(opt, field.config.advancedDisplayField)
+            else
+              | #{opt[field.config.displayField]}
         else
-          option(value=opt[field.config.identifierField]) #{opt[field.config.displayField]}
+          option(value=opt[field.config.identifierField])
+            if field.config.advancedDisplayField
+              +queryValue(opt, field.config.advancedDisplayField)
+            else
+              | #{opt[field.config.displayField]}
     else
       option(value='') --- No records found ---
-
 mixin installEditors(fields)
   script(type='text/javascript')
   each field, key in fields
     if field.config.editor
-        | CKEDITOR.replace( 'form-#{key}' );
+        | CKEDITOR.replace( 'form-#{key}' );mixin installEditors(fields)
+mixin queryValue(obj, path)
+  if path
+     - var sections = path.toString().split(".")
+      each section in sections
+          - obj = obj[section];
+      |#{obj}
 
 mixin setupChosen()
   script(type='text/javascript').
