@@ -32,10 +32,12 @@ mixin listRow(obj, instance)
 mixin listValue(key, field, value)
   case field.model.type
     when 'association'
-      if (typeof value === 'string')
+      if (typeof value === 'string' || typeof field.config === 'undefined' || typeof field.config.displayField === 'undefined')
         td #{value}
+      else if(typeof value === 'undefined')
+        td "#{field.config.displayField}"
       else
-        td #{value[field.config.displayField]}
+        td  #{value[field.config.displayField]}
 
     when 'association_many'
       if (!value || typeof value === 'undefined')
