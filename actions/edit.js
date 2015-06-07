@@ -46,7 +46,9 @@ module.exports = function(req, res) {
                     }
                     var reqData = request.processRequest(req, fields);
                     _.merge(record, reqData); // merging values from request to record
-                    instance.model.update({id: record.id}, reqData).exec(function(err) {
+                    var params = {};
+                    params[req._sails.config.adminpanel.identifierField] = req.param('id');
+                    instance.model.update(params, reqData).exec(function(err) {
                         if (err) {
                             req._sails.log.error(err);
                             req.flash('adminError', err.details || 'Something went wrong...');
@@ -80,7 +82,7 @@ module.exports = function(req, res) {
                     });
                 }
             ], function(err) {
-                res.view(views.getViewPath('edit'), {
+                res.viewAdmin({
                     instance: instance,
                     record: record,
                     fields: fields

@@ -2,11 +2,13 @@ extends ./layout
 
 include ./mixin/listHelper
 include ./mixin/pagination
+include ./mixin/actions
 
 block body
   .container-fluid
     .page-header
       h3 List of #{instance.name}
+        +globalActions('list', instance)
         if instance.config.add
           a(href='#{instance.uri}/add').btn.btn-success.pull-right
             i.glyphicon.glyphicon-plus
@@ -24,7 +26,7 @@ block body
         if total > 0
           div: mark Total: #{total}
         hr
-        +pagination(instancePath, (req.param('page') || 1), total, instance.config.list.limit, requestProcessor)
+        +pagination(instance.uri, (req.param('page') || 1), total, instance.config.list.limit, requestProcessor)
 
         if list.length == 0
           .alert.alert-info

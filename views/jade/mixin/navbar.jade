@@ -27,25 +27,25 @@ mixin navbar
               ul(role='menu').dropdown-menu
                 each menuItem in group.menues
                   +menuItem(menuItem)
-          each menuItem in locals.adminpanel.menuHelper.getInstanceMenues()
+          each menuItem in locals.adminpanel.menuHelper.getMenuItems()
             +menuItem(menuItem)
 
 
 
-        ul.nav.navbar-nav.navbar-right
-
-          li: a(href='/auth/logout')
-            i.glyphicon.glyphicon-off
-            | &nbsp;#{__('Log out')}
-
-          li.dropdown
-            a(href='#', data-toggle='dropdown').dropdown-toggle
-              i.glyphicon.glyphicon-question-sign
-              | &nbsp;
-              span.caret
-
-            ul(role='menu').dropdown-menu
-              li: a(href='#') Some help
-              li: a(href='#') Some help 2
-              li.divider
-              li: a(href='#') Some else
+        //ul.nav.navbar-nav.navbar-right
+        //
+        //  li: a(href='/auth/logout')
+        //    i.glyphicon.glyphicon-off
+        //    | &nbsp;#{__('Log out')}
+        //
+        //  li.dropdown
+        //    a(href='#', data-toggle='dropdown').dropdown-toggle
+        //      i.glyphicon.glyphicon-question-sign
+        //      | &nbsp;
+        //      span.caret
+        //
+        //    ul(role='menu').dropdown-menu
+        //      li: a(href='#') Some help
+        //      li: a(href='#') Some help 2
+        //      li.divider
+        //      li: a(href='#') Some else

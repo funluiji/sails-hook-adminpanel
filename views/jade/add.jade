@@ -1,22 +1,27 @@
 extends ./layout
+
 include ./mixin/widgets
+include ./mixin/actions
 
 block body
   .container-fluid
     .page-header
       h3 Add new record
+        +globalActions('add', instance)
         a(href='#{instance.uri}').btn.btn-info.pull-right
           i.glyphicon.glyphicon-th-list
           | &nbsp;Back to list
     form(role='form', action='#{instance.uri}/add', method='POST', enctype="multipart/form-data").form-horizontal
       each field, key in fields
-        +fieldWidget(key, field, data[key])
-      div
-        input(type="hidden", name="_csrf", value=_csrf)
+        +fieldWidget(key, field, data[key], instance)
+      if adminpanel.configHelper.isCsrfEnabled()
+        div
+          input(type="hidden", name="_csrf", value=_csrf)
       div
         button().btn.btn-success
           i.glyphicon.glyphicon-ok
           | &nbsp;Create
+        +inlineActions(instance, {}, 'add')
 
 
 block js
