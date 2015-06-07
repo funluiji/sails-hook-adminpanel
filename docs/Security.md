@@ -17,7 +17,7 @@ Option could be setuped into 4 ways:
 ```javascript
 module.exports.adminpanel = {
 
-    policies: 'isAdmin',
+    policy: 'isAdmin',
 
     //...
 };
@@ -30,7 +30,7 @@ It will load policy from your `api/policy/isAdmin.js` file and apply it to all a
 ```javascript
 module.exports.adminpanel = {
 
-    policies: ['isAuthorized', 'isAdmin'],
+    policy: ['isAuthorized', 'isAdmin'],
 
     //...
 };
@@ -44,7 +44,7 @@ In this example `isAuthorized.js` policy will be applied first and `isAdmin.js` 
 ```javascript
 module.exports.adminpanel = {
 
-    policies: function(req, res, next) {
+    policy: function(req, res, next) {
         if (!req.user || !req.user.isAdmin) {
             return res.forbidden('You have no rights !');
         }
@@ -62,7 +62,7 @@ This policy will be applied to all admin panel routes.
 ```javascript
 module.exports.adminpanel = {
 
-    policies: [
+    policy: [
         function(req, res, next) {
             if (!req.user) {
                 return res.forbidden('You have no rights !');
