@@ -87,6 +87,7 @@ mixin inputModel(key, field, value)
     else
       option(value='') --- No records found ---
 
+//|!{JSON.stringify(field.config)}
 mixin inputChosen(key, field, value)
   select.chosen-select(name=key, id='form-#{key}', data-placeholder="--- Select please ---", multiple, required=field.config.required || false, disabled=field.config.disabled || false).form-control
     if field.config.records
@@ -109,6 +110,8 @@ mixin inputChosen(key, field, value)
               | #{opt[field.config.displayField]}
     else
       option(value='') --- No records found ---
+  if field.config.order_model
+    input(type='hidden', value=field.config.order_model, id='form-#{key}-hidden').form-control
 mixin installEditors(fields)
   script(type='text/javascript')
   each field, key in fields
@@ -120,9 +123,52 @@ mixin queryValue(obj, path)
       each section in sections
           - obj = obj[section];
       |#{obj}
-
 mixin setupChosen()
   script(type='text/javascript').
+    var chosenOrderedSelection
     $(document).ready(function () {
+      var dict = {};
       $(".chosen-select").chosen({width: "95%"});
+      $(".chosen-select").each(function(index){
+        var hdId = this.id + "-hidden";
+        var hiddenInput = $("#" + hdId);
+        if (!hiddenInput) {
+          return;
+        }
+        var orderedInput = $("#" + "form-" + hiddenInput.val());
+        if (!orderedInput) {
+          return;
+        }
+        if(orderedInput.val()) {
+          dict[hdId] = JSON.parse(orderedInput.val());
+        }
+
+      });
+      $(".chosen-select").on('change', function (e, params) {
+        console.log(params);
+        var hdId =  e.target.id + "-hidden";
+        var hiddenInput = $("#" + hdId);
+        if(!hiddenInput){
+          return;
+        }
+        var orderedInput = $("#" + "form-" + hiddenInput.val());
+        if(!orderedInput){
+          return;
+        }
+        if(dict[hdId] === undefined) {
+          dict[hdId] = [];
+        }
+
+        if (params.selected) {
+          dict[hdId].push(params.selected);
+        }else if(params.deselected) {
+          var index = dict[hdId].indexOf(params.deselected);
+          if (index > -1) {
+            dict[hdId].splice(index, 1);
+          }
+
+        }
+
+        orderedInput.val(JSON.stringify(dict[hdId]));
+      });
     })
