@@ -11,8 +11,8 @@ mixin showValue(key, field, value)
     when 'association'
       if (typeof value === 'string')
         | #{value}
-      else
-        | #{value[field.config.displayField]}
+      else if(value)
+          | #{value[field.config.displayField]}
 
     when 'association_many'
       if (!value || typeof value === 'undefined')
