@@ -22,11 +22,12 @@ block body
           i.glyphicon.glyphicon-ok
           | &nbsp;Create
         +inlineActions(instance, {}, 'add')
-
+  +popUpHidden()
 
 block js
   +installEditors(fields)
   +setupChosen()
+  +setupJsonEditor()
 
 //<div ng-jsoneditor="onLoad" ng-model="obj.data" options="obj.options" style="width: 400px; height: 300px;"></div>
 

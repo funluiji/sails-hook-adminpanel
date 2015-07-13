@@ -28,7 +28,9 @@ block body
           i.glyphicon.glyphicon-ok
           | &nbsp;Save
         +inlineActions(instance, record, 'edit')
+  +popUpHidden()
 
 block js
   +installEditors(fields)
   +setupChosen()
+  +setupJsonEditor()

@@ -33,6 +33,8 @@ mixin fieldWidget(key, field, value, instance)
             +inputCheckbox(key, field, value)
           when 'text'
             +textarea(key, field, value)
+          when 'json'
+            +jsoneditor(key, field, value)
           default
             +inputText(key, field, value)
 
@@ -45,6 +47,16 @@ mixin inputText(key, field, value)
     input(type='file', name=key, id='form-#{key}', required=field.config.required || false, disabled=field.config.disabled || false, value=value).form-control
   else
     input(type='text', name=key, id='form-#{key}', required=field.config.required || false, disabled=field.config.disabled || false, value=value).form-control
+
+mixin jsoneditor(key, field, value)
+  - var json = value
+  - if (typeof(value) !== 'string') {
+  - json = JSON.stringify(value)
+  - }
+    input(type='text', style='width:90%; display:inline', name=key, id='form-#{key}', required=field.config.required || false, disabled=false, value=json, schema=JSON.stringify(field.config.schema) readonly).form-control
+    a(href=link,form='form-#{key}').btn.btn-info.json-editor
+      i(class='glyphicon-edit').glyphicon
+
 
 mixin inputPassword(key, field, value)
   input(type='password', name=key, id='form-#{key}', required=field.config.required || false, disabled=field.config.disabled || false value=value).form-control
@@ -125,7 +137,7 @@ mixin queryValue(obj, path)
       |#{obj}
 mixin setupChosen()
   script(type='text/javascript').
-    var chosenOrderedSelection
+    var chosenOrderedSelection;
     $(document).ready(function () {
       var dict = {};
       $(".chosen-select").chosen({width: "95%"});
@@ -171,4 +183,59 @@ mixin setupChosen()
 
         orderedInput.val(JSON.stringify(dict[hdId]));
       });
-    })
+    });
+
+mixin setupJsonEditor()
+  script(type='text/javascript').
+    $(document).ready(function () {
+      $(".json-editor").click(function () {
+        var parentId = $(this).attr("form");
+        var parentDOM = $(this).parent().find('#'+parentId);
+        var modalPopUp = $('#modal-content').modal({
+          show: true
+        });
+
+        var jsonData = {};
+        var jsonSchema = parentDOM.attr("schema") && JSON.parse(parentDOM.attr("schema")) || {"type":"object"};
+
+        var jsonEditorDiv = modalPopUp.find(".modal-body")[0];
+        jsonEditorDiv.innerHTML = '';
+
+        var options = {theme: 'bootstrap3', schema: jsonSchema};
+        if(parentDOM.val().length > 0) {
+          jsonData = JSON.parse(parentDOM.val());
+          options.startval = jsonData;
+        }
+        var editor = new JSONEditor(jsonEditorDiv, options);
+        console.log(jsonData);
+
+        editor.on('ready', function () {
+          // Now the api methods will be available
+          editor.validate();
+        });
+
+        modalPopUp.find(".btn-primary").click(function (e) {
+          var jsonObj = editor.getValue();
+          parentDOM.val(JSON.stringify(jsonObj));
+          modalPopUp.modal('hide');
+        });
+
+      });
+
+    });
+
+mixin popUpHidden()
+  div#modal-content.modal.fade(tabindex="-1" role="dialog")
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close(type="button" data-dismiss="modal")
+            |×
+          .h3
+            |JSON Editor
+        .modal-body
+        .modal-footer
+          a.btn(href="#" data-dismiss="modal")
+            |Close
+          a.btn.btn-primary(href="#")
+            |Save changes

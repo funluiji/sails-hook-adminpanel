@@ -56,6 +56,8 @@ mixin listValue(key, field, value)
               |, #{reccord[[field.config.displayField]]}
       else
         td #{value && value[field.config.displayField] ? value[field.config.displayField] : '&nbsp;'}
+    when 'json'
+      td #{JSON.stringify(value)}
     when 'boolean'
       td
         if value
